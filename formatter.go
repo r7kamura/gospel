@@ -75,7 +75,7 @@ func (formatter *DocumentFormatter) Succeeded(example *Example) {
 }
 
 func (formatter *DocumentFormatter) Failed(example *Example, message string, actual, expected interface{}) {
-	_, filename, line, _ := runtime.Caller(3)
+	_, filename, line, _ := runtime.Caller(4)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	margin := strings.Repeat("  ", len(example.SubDescriptions) + 1)
