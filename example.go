@@ -42,11 +42,11 @@ func (example *Example) Started() {
 					continue
 				}
 			}
-			fullMessage += strings.Repeat("\t", i + 1) + subscription
+			fullMessage += strings.Repeat("\t", i + 1) + subscription + "\n"
 			differenceIsFound = true
 		}
-		fmt.Println(fullMessage)
 	}
+	fmt.Print(fullMessage)
 	example.PreviousSubDescriptions = append(make([]string, 0), example.SubDescriptions...)
 }
 
