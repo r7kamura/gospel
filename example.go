@@ -2,6 +2,8 @@ package gospel
 
 import (
 	"fmt"
+	"io/ioutil"
+	"runtime"
 	"strings"
 )
 
@@ -53,18 +55,34 @@ func (example *Example) Done() {
 
 // Succeeded() is called when any of its expectation failed.
 func (example *Example) Succeeded(message string, actual, expected interface{}) {
-	fmt.Println(green(example.MessageLine()))
+	fmt.Println(example.LeftMargin() + green(example.Message))
 }
 
 // Failed() is called when any of its expectation failed.
 func (example *Example) Failed(message string, actual, expected interface{}) {
-	fmt.Println(red(example.MessageLine()))
-	example.Describing.T.Errorf("Expected `%v` to %s `%v`", expected, message, actual)
+	_, filename, line, _ := runtime.Caller(3)
+	buffer, _ := ioutil.ReadFile(filename)
+	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
+	fmt.Printf(
+		red("%s%s\n") +
+		grey("%sExpected `%v` to %s `%v`\n") +
+		grey("%s%s:%d\n") +
+		grey("%s%4d.%s\n") +
+		grey("%s%4d.%s\n") +
+		grey("%s%4d.%s\n"),
+		example.LeftMargin(), example.Message,
+		example.LeftMargin(), actual, message, expected,
+		example.LeftMargin(), filename, line,
+		example.LeftMargin(), line - 1, lines[0],
+		example.LeftMargin(), line + 0, lines[1],
+		example.LeftMargin(), line + 1, lines[2],
+	)
+	example.Describing.T.Fail()
 }
 
-// Utility method to return message line with proper tabs.
-func (example *Example) MessageLine() string {
-	return strings.Repeat("\t", len(example.SubDescriptions) + 1) + example.Message
+// Utility method to put margin.
+func (example *Example) LeftMargin() string {
+	return strings.Repeat("\t", len(example.SubDescriptions) + 1)
 }
 
 // Add red terminal ANSI color
@@ -75,4 +93,9 @@ func red(str string) string {
 // Add green terminal ANSI color
 func green(str string) string {
 	return "\033[32m\033[1m" + str + "\033[0m"
+}
+
+// Add grey terminal ANSI color
+func grey(str string) string {
+	return "\x1B[90m" + str + "\033[0m"
 }

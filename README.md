@@ -46,16 +46,6 @@ func TestDescribe(t *testing.T) {
 
 ```
 $ go test
-gospel.Expectation#ToEqual
-        with 1 & 1
-                compares integers by ==
-        with `1` & `1`
-                compares strings by ==
-gospel.Expectation#ToNotEqual
-        with 1 & 2
-                compares integers by !=
-        with `1` & `2`
-                compares strings by !=
-PASS
-ok      _/Users/r7kamura/gospel     0.023s
 ```
+
+![](http://dl.dropboxusercontent.com//u/5978869/image/20131003_025631.png)
