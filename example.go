@@ -54,7 +54,9 @@ func (example *Example) Started() {
 // Done() is called at end of this example.
 func (example *Example) Done() {
 	example.DoneExamplesCount++
-	example.Succeeded()
+	if !example.HasFailure {
+		example.Succeeded()
+	}
 }
 
 // Succeeded() is called when all of its expectations are passed.

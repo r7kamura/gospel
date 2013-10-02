@@ -28,8 +28,10 @@ func (expectation *Expectation) ToNotExist() {
 
 // All-purpose matcher method to compare values with a given `matcher`.
 func (expectation *Expectation) To(message string, matcher Matcher, expected interface{}) {
-	if !matcher(expectation.Actual, expected) {
-		expectation.Example.Failed(message, expectation.Actual, expected)
+	if !expectation.Example.HasFailure {
+		if !matcher(expectation.Actual, expected) {
+			expectation.Example.Failed(message, expectation.Actual, expected)
+		}
 	}
 }
 
