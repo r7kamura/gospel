@@ -45,7 +45,7 @@ func TestDescribe(t *testing.T) {
 ```
 
 ```
-$ go test
+$ go test -v
 ```
 
 ![](http://dl.dropboxusercontent.com//u/5978869/image/20131003_025631.png)
