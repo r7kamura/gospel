@@ -28,4 +28,25 @@ func TestDescribe(t *testing.T) {
 			})
 		})
 	})
+
+	Describe(t, "gospel.Expectation#ToExist", func(context Context, it It) {
+		context("with 1", func() {
+			it("checks existence by non-equivalence with nil", func(expect Expect) {
+				expect(1).ToExist()
+			})
+		})
+		context("with `1`", func() {
+			it("checks existence by non-equivalence with nil", func(expect Expect) {
+				expect("1").ToExist()
+			})
+		})
+	})
+
+	Describe(t, "gospel.Expectation#ToNotExist", func(context Context, it It) {
+		context("with nil", func() {
+			it("checks existence by equivalence with nil", func(expect Expect) {
+				expect(nil).ToNotExist()
+			})
+		})
+	})
 }
