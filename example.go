@@ -43,7 +43,7 @@ func (example *Example) Started() {
 					continue
 				}
 			}
-			fullMessage += strings.Repeat("\t", i + 1) + subscription + "\n"
+			fullMessage += strings.Repeat("  ", i + 1) + subscription + "\n"
 			differenceIsFound = true
 		}
 	}
@@ -89,7 +89,7 @@ func (example *Example) Failed(message string, actual, expected interface{}) {
 
 // Utility method to put margin.
 func (example *Example) LeftMargin() string {
-	return strings.Repeat("\t", len(example.SubDescriptions) + 1)
+	return strings.Repeat("  ", len(example.SubDescriptions) + 1)
 }
 
 // Add red terminal ANSI color
