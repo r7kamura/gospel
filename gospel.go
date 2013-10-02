@@ -29,7 +29,11 @@ func Describe(t *testing.T, description string, describeCallback func(Context, I
 		PreviousSubDescriptions: make([]string, 0),
 	}
 	it := func(message string, evaluator func(Expect)) {
-		example := Example{describing, message, evaluator}
+		example := Example{
+			Describing: describing,
+			Message: message,
+			Evaluator: evaluator,
+		}
 		example.Run()
 	}
 	context := func(subDescription string, contextCallback func()) {

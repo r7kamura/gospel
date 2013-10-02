@@ -12,6 +12,7 @@ type Example struct {
 	*Describing
 	Message string
 	Evaluator func(Expect)
+	HasFailure bool
 }
 
 // Run() is called as soon as it(message, evaluator) is called.
@@ -53,10 +54,11 @@ func (example *Example) Started() {
 // Done() is called at end of this example.
 func (example *Example) Done() {
 	example.DoneExamplesCount++
+	example.Succeeded()
 }
 
-// Succeeded() is called when any of its expectation failed.
-func (example *Example) Succeeded(message string, actual, expected interface{}) {
+// Succeeded() is called when all of its expectations are passed.
+func (example *Example) Succeeded() {
 	fmt.Println(example.LeftMargin() + green(example.Message))
 }
 
@@ -80,6 +82,7 @@ func (example *Example) Failed(message string, actual, expected interface{}) {
 		example.LeftMargin(), line + 1, lines[2],
 	)
 	example.Describing.T.Fail()
+	example.HasFailure = true
 }
 
 // Utility method to put margin.
