@@ -45,7 +45,13 @@ func TestDescribe(t *testing.T) {
 ```
 
 ```
+$ go test
+```
+
+![](http://dl.dropboxusercontent.com//u/5978869/image/20131003_083821.png)
+
+```
 $ go test -v
 ```
 
-![](http://dl.dropboxusercontent.com//u/5978869/image/20131003_025631.png)
+![](http://dl.dropboxusercontent.com//u/5978869/image/20131003_083718.png)
