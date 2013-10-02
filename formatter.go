@@ -20,6 +20,27 @@ func (formatter *DotFormatter) Started(example *Example) {
 
 func (formatter *DotFormatter) Failed(example *Example, message string, actual, expected interface{}) {
 	fmt.Print(red("F"))
+	if example.Describing.Result == "" {
+		example.Describing.Result += "\n\n"
+	}
+	_, filename, line, _ := runtime.Caller(4)
+	buffer, _ := ioutil.ReadFile(filename)
+	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
+	example.Describing.Result += fmt.Sprintf(
+		red("  %s\n") +
+		grey("  Expected `%v` to %s `%v`\n") +
+		grey("  %s:%d\n") +
+		grey("  %4d.%s\n") +
+		grey("  %4d.%s\n") +
+		grey("  %4d.%s\n") +
+		"\n",
+		example.FullDescription(),
+		actual, message, expected,
+		filename, line,
+		line - 1, strings.Replace(lines[0], "\t", "  ", -1),
+		line + 0, strings.Replace(lines[1], "\t", "  ", -1),
+		line + 1, strings.Replace(lines[2], "\t", "  ", -1),
+	)
 }
 
 func (formatter *DotFormatter) Succeeded(example *Example) {

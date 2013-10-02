@@ -1,6 +1,7 @@
 package gospel
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -43,6 +44,11 @@ type Describing struct {
 	Description string
 	SubDescriptions []string
 	PreviousSubDescriptions []string
+	Result string
+}
+
+func (describing *Describing) PrintResult() {
+	fmt.Print(describing.Result)
 }
 
 // Please call Describe(...) from your TestXxx function.
@@ -68,4 +74,5 @@ func Describe(t *testing.T, description string, describeCallback func(Context, I
 		describing.SubDescriptions = describing.SubDescriptions[:len(describing.SubDescriptions) - 1]
 	}
 	describeCallback(context, it)
+	describing.PrintResult()
 }

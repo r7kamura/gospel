@@ -1,5 +1,7 @@
 package gospel
 
+import "strings"
+
 // it(message, evaluator) will create this object.
 type Example struct {
 	*Describing
@@ -47,4 +49,13 @@ func (example *Example) Failed(message string, actual, expected interface{}) {
 	example.Describing.T.Fail()
 	example.HasFailure = true
 	example.Formatter.Failed(example, message, actual, expected)
+}
+
+// Returns its entire descriptions + message as a string.
+func (example *Example) FullDescription() string {
+	var segments []string
+	segments = append(segments, example.Description)
+	segments = append(segments, example.SubDescriptions...)
+	segments = append(segments, example.Message)
+	return strings.Join(segments, " ")
 }
