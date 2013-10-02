@@ -1,6 +1,20 @@
 package gospel
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
+
+var verboseMode bool
+
+func init() {
+	for _, argument := range os.Args {
+		if argument == "-test.v=true" {
+			verboseMode = true
+			return
+		}
+	}
+}
 
 // Utility type for context(...) function.
 type Context func(string, func())
@@ -33,6 +47,7 @@ func Describe(t *testing.T, description string, describeCallback func(Context, I
 			Describing: describing,
 			Message: message,
 			Evaluator: evaluator,
+			Formatter: newFormatter(),
 		}
 		example.Run()
 	}
@@ -42,4 +57,13 @@ func Describe(t *testing.T, description string, describeCallback func(Context, I
 		describing.SubDescriptions = describing.SubDescriptions[:len(describing.SubDescriptions) - 1]
 	}
 	describeCallback(context, it)
+}
+
+// Factory method to create a Formatter.
+func newFormatter() Formatter {
+	if verboseMode {
+		return &DocumentFormatter{}
+	} else {
+		return &DotFormatter{}
+	}
 }
