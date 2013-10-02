@@ -2,7 +2,7 @@ package gospel
 
 // expect(actual) will create this object.
 type Expectation struct {
-	Example *Example
+	*Example
 	Actual interface{}
 }
 
@@ -29,7 +29,7 @@ func (expectation *Expectation) ToNotExist() {
 // All-purpose matcher method to compare values with a given `matcher`.
 func (expectation *Expectation) To(message string, matcher Matcher, expected interface{}) {
 	if !matcher(expectation.Actual, expected) {
-		expectation.Example.Fail(message, expectation.Actual, expected)
+		expectation.Example.Failed(message, expectation.Actual, expected)
 	}
 }
 

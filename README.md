@@ -16,21 +16,29 @@ import (
 )
 
 func TestDescribe(t *testing.T) {
-	Describe(t, "gospel.Expectation#ToEqual", func(it It) {
-		it("compares integers with ==", func(expect Expect) {
-			expect(1).ToEqual(1)
+	Describe(t, "gospel.Expectation#ToEqual", func(context Context, it It) {
+		context("with 1 & 1", func() {
+			it("compares integers with ==", func(expect Expect) {
+				expect(1).ToEqual(1)
+			})
 		})
-		it("compares strings with ==", func(expect Expect) {
-			expect("1").ToEqual("1")
+		context("with `1` & `1`", func() {
+			it("compares strings with ==", func(expect Expect) {
+				expect("1").ToEqual("1")
+			})
 		})
 	})
 
-	Describe(t, "gospel.Expectation#ToNotEqual", func(it It) {
-		it("compares integers with !=", func(expect Expect) {
-			expect(1).ToNotEqual(2)
+	Describe(t, "gospel.Expectation#ToNotEqual", func(context Context, it It) {
+		context("with 1 & 2", func() {
+			it("compares integers with !=", func(expect Expect) {
+				expect(1).ToNotEqual(2)
+			})
 		})
-		it("compares strings with !=", func(expect Expect) {
-			expect("1").ToNotEqual("2")
+		context("with `1` & `2`", func() {
+			it("compares strings with !=", func(expect Expect) {
+				expect("1").ToNotEqual("2")
+			})
 		})
 	})
 }
@@ -39,11 +47,15 @@ func TestDescribe(t *testing.T) {
 ```
 $ go test
 gospel.Expectation#ToEqual
-        compares integers with ==
-        compares strings with ==
+        with 1 & 1
+                compares integers with ==
+        with `1` & `1`
+                compares strings with ==
 gospel.Expectation#ToNotEqual
-        compares integers with !=
-        compares strings with !=
+        with 1 & 2
+                compares integers with !=
+        with `1` & `2`
+                compares strings with !=
 PASS
 ok      _/Users/r7kamura/gospel     0.023s
 ```
