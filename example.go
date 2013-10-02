@@ -79,9 +79,9 @@ func (example *Example) Failed(message string, actual, expected interface{}) {
 		example.LeftMargin(), example.Message,
 		example.LeftMargin(), actual, message, expected,
 		example.LeftMargin(), filename, line,
-		example.LeftMargin(), line - 1, lines[0],
-		example.LeftMargin(), line + 0, lines[1],
-		example.LeftMargin(), line + 1, lines[2],
+		example.LeftMargin(), line - 1, strings.Replace(lines[0], "\t", "  ", -1),
+		example.LeftMargin(), line + 0, strings.Replace(lines[1], "\t", "  ", -1),
+		example.LeftMargin(), line + 1, strings.Replace(lines[2], "\t", "  ", -1),
 	)
 	example.Describing.T.Fail()
 	example.HasFailure = true
