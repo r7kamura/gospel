@@ -34,17 +34,19 @@ func (example *Example) Started() {
 	if example.DoneExamplesCount == 0 {
 		fullMessage += example.Description + "\n"
 	}
-	differenceIsFound := false
-	for i, subscription := range example.SubDescriptions {
-		if !differenceIsFound && i <= len(example.PreviousSubDescriptions) - 1 {
-			if subscription == example.PreviousSubDescriptions[i] {
-				continue
+	if len(example.SubDescriptions) > 0 {
+		differenceIsFound := false
+		for i, subscription := range example.SubDescriptions {
+			if !differenceIsFound && i <= len(example.PreviousSubDescriptions) - 1 {
+				if subscription == example.PreviousSubDescriptions[i] {
+					continue
+				}
 			}
+			fullMessage += strings.Repeat("\t", i + 1) + subscription
+			differenceIsFound = true
 		}
-		fullMessage += strings.Repeat("\t", i + 1) + subscription
-		differenceIsFound = true
+		fmt.Println(fullMessage)
 	}
-	fmt.Println(fullMessage)
 	example.PreviousSubDescriptions = append(make([]string, 0), example.SubDescriptions...)
 }
 
