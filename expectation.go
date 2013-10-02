@@ -18,12 +18,12 @@ func (expectation *Expectation) ToNotEqual(expected interface{}) {
 
 // Matcher method: actual != nil.
 func (expectation *Expectation) ToExist() {
-	expectation.To("exist", NotEqual, nil)
+	expectation.To("not equal", NotEqual, nil)
 }
 
 // Matcher method: actual == nil.
 func (expectation *Expectation) ToNotExist() {
-	expectation.To("not exist", Equal, nil)
+	expectation.To("equal", Equal, nil)
 }
 
 // All-purpose matcher method to compare values with a given `matcher`.
