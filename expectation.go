@@ -1,32 +1,32 @@
 package gospel
 
-// expect(actual) will create this object.
+// func Expect() creates a new Expectation object.
 type Expectation struct {
 	*Example
 	Actual interface{}
 }
 
-// Matcher method: actual == expected.
+// Checks if actual == expected.
 func (expectation *Expectation) ToEqual(expected interface{}) {
 	expectation.To("equal", Equal, expected)
 }
 
-// Matcher method: actual != expected.
+// Checks if actual != expected.
 func (expectation *Expectation) ToNotEqual(expected interface{}) {
 	expectation.To("not equal", NotEqual, expected)
 }
 
-// Matcher method: actual != nil.
+// Checks if actual != nil.
 func (expectation *Expectation) ToExist() {
 	expectation.To("not equal", NotEqual, nil)
 }
 
-// Matcher method: actual == nil.
+// Checks if actual == nil.
 func (expectation *Expectation) ToNotExist() {
 	expectation.To("equal", Equal, nil)
 }
 
-// All-purpose matcher method to compare values with a given `matcher`.
+// Checks if matcher(actual, expected) == true only if all of previous expectations passed.
 func (expectation *Expectation) To(message string, matcher Matcher, expected interface{}) {
 	if !expectation.Example.HasFailure {
 		if !matcher(expectation.Actual, expected) {
@@ -35,7 +35,7 @@ func (expectation *Expectation) To(message string, matcher Matcher, expected int
 	}
 }
 
-// Utility type to define matcher function's form.
+// Utility type to define a matcher function.
 type Matcher func(interface{}, interface{}) bool
 
 // For To(...) function.

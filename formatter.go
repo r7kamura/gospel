@@ -3,9 +3,32 @@ package gospel
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"runtime"
 	"strings"
 )
+
+// Decides Formatter type.
+var verboseMode bool
+
+// Checks if -v option specified or not.
+func init() {
+	for _, argument := range os.Args {
+		if argument == "-test.v=true" {
+			verboseMode = true
+			return
+		}
+	}
+}
+
+// Factory method to create a Formatter.
+func newFormatter() Formatter {
+	if verboseMode {
+		return &DocumentFormatter{}
+	} else {
+		return &DotFormatter{}
+	}
+}
 
 type Formatter interface {
 	Started(*Example)

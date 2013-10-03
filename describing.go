@@ -2,33 +2,10 @@ package gospel
 
 import (
 	"fmt"
-	"os"
 	"testing"
 )
 
-// Decides Formatter type.
-var verboseMode bool
-
-// Checks if -v option specified or not.
-func init() {
-	for _, argument := range os.Args {
-		if argument == "-test.v=true" {
-			verboseMode = true
-			return
-		}
-	}
-}
-
-// Factory method to create a Formatter.
-func newFormatter() Formatter {
-	if verboseMode {
-		return &DocumentFormatter{}
-	} else {
-		return &DotFormatter{}
-	}
-}
-
-// Describe(...) will create this object to manage its examples.
+// func Describe() function creates a new Describing object.
 type Describing struct {
 	*testing.T
 	DoneExamplesCount uint
@@ -38,35 +15,47 @@ type Describing struct {
 	Result string
 }
 
-// Print describing's Result value. This value is set if any example failed without -v option.
+// Called from Context().
+func (describing *Describing) PushSubDescription(subDescription string) {
+	describing.SubDescriptions = append(describing.SubDescriptions, subDescription)
+}
+
+// Called from Context().
+func (describing *Describing) PopSubDescription() {
+	describing.SubDescriptions = describing.SubDescriptions[:len(describing.SubDescriptions) - 1]
+}
+
+// Prints Describing.Result value to show failures in non verbose mode.
 func (describing *Describing) PrintResult() {
 	fmt.Print(describing.Result)
 }
 
-// Share a current running Describing object.
+// Shares a current running Describing object.
 var currentDescribing *Describing
 
-// Share a current running Example object.
+// Shares a current running Example object.
 var currentExample *Example
 
-// Please call Describe(...) from your TestXxx function.
-func Describe(t *testing.T, description string, describeCallback func()) {
+// Creates and invokes a new Describing object.
+func Describe(t *testing.T, description string, callback func()) {
 	currentDescribing = &Describing{
 		T: t,
 		Description: description,
-		SubDescriptions: make([]string, 0),
-		PreviousSubDescriptions: make([]string, 0),
+		SubDescriptions: []string{},
+		PreviousSubDescriptions: []string{},
 	}
-	describeCallback()
+	callback()
 	currentDescribing.PrintResult()
 }
 
-func Context(subDescription string, contextCallback func()) {
-	currentDescribing.SubDescriptions = append(currentDescribing.SubDescriptions, subDescription)
-	contextCallback()
-	currentDescribing.SubDescriptions = currentDescribing.SubDescriptions[:len(currentDescribing.SubDescriptions) - 1]
+// Nests example description.
+func Context(subDescription string, callback func()) {
+	currentDescribing.PushSubDescription(subDescription)
+	callback()
+	currentDescribing.PopSubDescription()
 }
 
+// Creates and invokes a new Example object.
 func It(message string, evaluator func()) {
 	currentExample = &Example{
 		Describing: currentDescribing,
@@ -77,6 +66,7 @@ func It(message string, evaluator func()) {
 	currentExample.Run()
 }
 
+// Creates a new Expectation object to test a given value.
 func Expect(actual interface{}) *Expectation {
 	return &Expectation{
 		Actual: actual,

@@ -2,7 +2,7 @@ package gospel
 
 import "strings"
 
-// it(message, evaluator) will create this object.
+// func It() creates a new Example object.
 type Example struct {
 	*Describing
 	Message string
@@ -11,7 +11,7 @@ type Example struct {
 	Formatter
 }
 
-// Run() is called as soon as it(message, evaluator) is called.
+// func It() calls this function to run the newly created example.
 func (example *Example) Run() {
 	example.Started()
 	example.Evaluate()
@@ -22,7 +22,7 @@ func (example *Example) Run() {
 	example.UpdatePreviousSubDescriptions()
 }
 
-// Evaluate() invokes its Evaluator function.
+// Invokes its Evaluator function.
 func (example *Example) Evaluate() {
 	example.Evaluator()
 }
@@ -44,7 +44,7 @@ func (example *Example) Succeeded() {
 
 // Called when any of expectations failed.
 func (example *Example) Failed(message string, actual, expected interface{}) {
-	example.Describing.T.Fail()
+	example.T.Fail()
 	example.HasFailure = true
 	example.Formatter.Failed(example, message, actual, expected)
 }
