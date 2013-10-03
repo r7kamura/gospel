@@ -6,7 +6,7 @@ import "strings"
 type Example struct {
 	*Describing
 	Message string
-	Evaluator func(Expect)
+	Evaluator func()
 	HasFailure bool
 	Formatter
 }
@@ -24,9 +24,7 @@ func (example *Example) Run() {
 
 // Evaluate() invokes its Evaluator function.
 func (example *Example) Evaluate() {
-	example.Evaluator(func(value interface{}) *Expectation {
-		return &Expectation{example, value}
-	})
+	example.Evaluator()
 }
 
 // Copy an array and then assign its slice.

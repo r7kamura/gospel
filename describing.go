@@ -28,15 +28,6 @@ func newFormatter() Formatter {
 	}
 }
 
-// Utility type for context(...) function.
-type Context func(string, func())
-
-// Utility type for expect(...) function.
-type Expect func(interface{}) *Expectation
-
-// Utility type for it(...) function.
-type It func(string, func(Expect))
-
 // Describe(...) will create this object to manage its examples.
 type Describing struct {
 	*testing.T
@@ -47,32 +38,48 @@ type Describing struct {
 	Result string
 }
 
+// Print describing's Result value. This value is set if any example failed without -v option.
 func (describing *Describing) PrintResult() {
 	fmt.Print(describing.Result)
 }
 
+// Share a current running Describing object.
+var currentDescribing *Describing
+
+// Share a current running Example object.
+var currentExample *Example
+
 // Please call Describe(...) from your TestXxx function.
-func Describe(t *testing.T, description string, describeCallback func(Context, It)) {
-	describing := &Describing{
+func Describe(t *testing.T, description string, describeCallback func()) {
+	currentDescribing = &Describing{
 		T: t,
 		Description: description,
 		SubDescriptions: make([]string, 0),
 		PreviousSubDescriptions: make([]string, 0),
 	}
-	it := func(message string, evaluator func(Expect)) {
-		example := Example{
-			Describing: describing,
-			Message: message,
-			Evaluator: evaluator,
-			Formatter: newFormatter(),
-		}
-		example.Run()
+	describeCallback()
+	currentDescribing.PrintResult()
+}
+
+func Context(subDescription string, contextCallback func()) {
+	currentDescribing.SubDescriptions = append(currentDescribing.SubDescriptions, subDescription)
+	contextCallback()
+	currentDescribing.SubDescriptions = currentDescribing.SubDescriptions[:len(currentDescribing.SubDescriptions) - 1]
+}
+
+func It(message string, evaluator func()) {
+	currentExample = &Example{
+		Describing: currentDescribing,
+		Message: message,
+		Evaluator: evaluator,
+		Formatter: newFormatter(),
 	}
-	context := func(subDescription string, contextCallback func()) {
-		describing.SubDescriptions = append(describing.SubDescriptions, subDescription)
-		contextCallback()
-		describing.SubDescriptions = describing.SubDescriptions[:len(describing.SubDescriptions) - 1]
+	currentExample.Run()
+}
+
+func Expect(actual interface{}) *Expectation {
+	return &Expectation{
+		Actual: actual,
+		Example: currentExample,
 	}
-	describeCallback(context, it)
-	describing.PrintResult()
 }
