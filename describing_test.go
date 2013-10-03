@@ -6,7 +6,7 @@ func TestDescribe(t *testing.T) {
 	Describe(t, "gospel.Expectation#ToEqual", func() {
 		Context("with 1 & 1", func() {
 			It("compares integers by ==", func() {
-				Expect(1).ToEqual(2)
+				Expect(1).ToEqual(1)
 				Expect(1).ToEqual(1)
 			})
 		})

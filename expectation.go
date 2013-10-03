@@ -1,5 +1,7 @@
 package gospel
 
+import "fmt"
+
 // func Expect() creates a new Expectation object.
 type Expectation struct {
 	*Example
@@ -8,42 +10,47 @@ type Expectation struct {
 
 // Checks if actual == expected.
 func (expectation *Expectation) ToEqual(expected interface{}) {
-	expectation.To("equal", Equal, expected)
+	expectation.To(Equal, expected)
 }
 
 // Checks if actual != expected.
 func (expectation *Expectation) ToNotEqual(expected interface{}) {
-	expectation.To("not equal", NotEqual, expected)
+	expectation.To(NotEqual, expected)
 }
 
 // Checks if actual != nil.
 func (expectation *Expectation) ToExist() {
-	expectation.To("not equal", NotEqual, nil)
+	expectation.To(NotEqual, nil)
 }
 
 // Checks if actual == nil.
 func (expectation *Expectation) ToNotExist() {
-	expectation.To("equal", Equal, nil)
+	expectation.To(Equal, nil)
 }
 
-// Checks if matcher(actual, expected) == true only if all of previous expectations passed.
-func (expectation *Expectation) To(message string, matcher Matcher, expected interface{}) {
+// Checks if a given matcher satisfies actual & optional values.
+func (expectation *Expectation) To(matcher Matcher, expected ...interface{}) {
 	if !expectation.Example.HasFailure {
-		if !matcher(expectation.Actual, expected) {
-			expectation.Example.Failed(message, expectation.Actual, expected)
+		values := append([]interface{}{expectation.Actual}, expected...)
+		if failureMessage := matcher(values...); failureMessage != "" {
+			expectation.Example.Failed(failureMessage)
 		}
 	}
 }
 
-// Utility type to define a matcher function.
-type Matcher func(interface{}, interface{}) bool
+// Returns a non-empty failure message if given actual & optional values are not matched.
+type Matcher func(...interface{}) string
 
-// For To(...) function.
-func Equal(actual, expected interface{}) bool {
-	return actual == expected
+func Equal(values ...interface{}) (failureMessage string) {
+	if values[0] != values[1] {
+		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
+	}
+	return
 }
 
-// For To(...) function.
-func NotEqual(actual, expected interface{}) bool {
-	return actual != expected
+func NotEqual(values ...interface{}) (failureMessage string) {
+	if values[0] == values[1] {
+		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
+	}
+	return
 }

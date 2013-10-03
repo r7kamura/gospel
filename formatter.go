@@ -32,7 +32,7 @@ func newFormatter() Formatter {
 
 type Formatter interface {
 	Started(*Example)
-	Failed(*Example, string, interface{}, interface{})
+	Failed(*Example, string)
 	Succeeded(*Example)
 }
 
@@ -41,7 +41,7 @@ type DotFormatter struct {}
 func (formatter *DotFormatter) Started(example *Example) {
 }
 
-func (formatter *DotFormatter) Failed(example *Example, message string, actual, expected interface{}) {
+func (formatter *DotFormatter) Failed(example *Example, message string) {
 	fmt.Print(red("F"))
 	if example.Describing.Result == "" {
 		example.Describing.Result += "\n\n"
@@ -51,14 +51,14 @@ func (formatter *DotFormatter) Failed(example *Example, message string, actual, 
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	example.Describing.Result += fmt.Sprintf(
 		red("  %s\n") +
-		grey("  Expected `%v` to %s `%v`\n") +
+		grey("  %s\n") +
 		grey("  %s:%d\n") +
 		grey("  %4d.%s\n") +
 		grey("  %4d.%s\n") +
 		grey("  %4d.%s\n") +
 		"\n",
 		example.FullDescription(),
-		actual, message, expected,
+		message,
 		filename, line,
 		line - 1, strings.Replace(lines[0], "\t", "  ", -1),
 		line + 0, strings.Replace(lines[1], "\t", "  ", -1),
@@ -97,20 +97,20 @@ func (formatter *DocumentFormatter) Succeeded(example *Example) {
 	fmt.Println(margin + green(example.Message))
 }
 
-func (formatter *DocumentFormatter) Failed(example *Example, message string, actual, expected interface{}) {
+func (formatter *DocumentFormatter) Failed(example *Example, message string) {
 	_, filename, line, _ := runtime.Caller(4)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	margin := strings.Repeat("  ", len(example.SubDescriptions) + 1)
 	fmt.Printf(
 		red("%s%s\n") +
-		grey("%sExpected `%v` to %s `%v`\n") +
+		grey("%s%s\n") +
 		grey("%s%s:%d\n") +
 		grey("%s%4d.%s\n") +
 		grey("%s%4d.%s\n") +
 		grey("%s%4d.%s\n"),
 		margin, example.Message,
-		margin, actual, message, expected,
+		margin, message,
 		margin, filename, line,
 		margin, line - 1, strings.Replace(lines[0], "\t", "  ", -1),
 		margin, line + 0, strings.Replace(lines[1], "\t", "  ", -1),

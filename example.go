@@ -43,10 +43,10 @@ func (example *Example) Succeeded() {
 }
 
 // Called when any of expectations failed.
-func (example *Example) Failed(message string, actual, expected interface{}) {
+func (example *Example) Failed(message string) {
 	example.T.Fail()
 	example.HasFailure = true
-	example.Formatter.Failed(example, message, actual, expected)
+	example.Formatter.Failed(example, message)
 }
 
 // Returns its entire descriptions + message as a string.
