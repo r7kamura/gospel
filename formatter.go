@@ -46,7 +46,7 @@ func (formatter *DotFormatter) Failed(example *Example, message string) {
 	if example.Describing.Result == "" {
 		example.Describing.Result += "\n\n"
 	}
-	_, filename, line, _ := runtime.Caller(4)
+	_, filename, line, _ := runtime.Caller(3)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	example.Describing.Result += fmt.Sprintf(
@@ -98,7 +98,7 @@ func (formatter *DocumentFormatter) Succeeded(example *Example) {
 }
 
 func (formatter *DocumentFormatter) Failed(example *Example, message string) {
-	_, filename, line, _ := runtime.Caller(4)
+	_, filename, line, _ := runtime.Caller(3)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	margin := strings.Repeat("  ", len(example.SubDescriptions) + 1)

@@ -8,26 +8,6 @@ type Expectation struct {
 	Actual interface{}
 }
 
-// Checks if actual == expected.
-func (expectation *Expectation) ToEqual(expected interface{}) {
-	expectation.To(Equal, expected)
-}
-
-// Checks if actual != expected.
-func (expectation *Expectation) ToNotEqual(expected interface{}) {
-	expectation.To(NotEqual, expected)
-}
-
-// Checks if actual != nil.
-func (expectation *Expectation) ToExist() {
-	expectation.To(NotEqual, nil)
-}
-
-// Checks if actual == nil.
-func (expectation *Expectation) ToNotExist() {
-	expectation.To(Equal, nil)
-}
-
 // Checks if a given matcher satisfies actual & optional values.
 func (expectation *Expectation) To(matcher Matcher, expected ...interface{}) {
 	if !expectation.Example.HasFailure {
@@ -41,6 +21,7 @@ func (expectation *Expectation) To(matcher Matcher, expected ...interface{}) {
 // Returns a non-empty failure message if given actual & optional values are not matched.
 type Matcher func(...interface{}) string
 
+// Checks if actual == expected.
 func Equal(values ...interface{}) (failureMessage string) {
 	if values[0] != values[1] {
 		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
@@ -48,9 +29,20 @@ func Equal(values ...interface{}) (failureMessage string) {
 	return
 }
 
+// Checks if actual != expected.
 func NotEqual(values ...interface{}) (failureMessage string) {
 	if values[0] == values[1] {
 		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
 	}
 	return
+}
+
+// Checks if actual != nil.
+func Exist(values ...interface{}) (failureMessage string) {
+	return NotEqual(values[0], nil)
+}
+
+// Checks if actual == nil.
+func NotExist(values ...interface{}) (failureMessage string) {
+	return Equal(values[0], nil)
 }
