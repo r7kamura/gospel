@@ -3,7 +3,7 @@ BDD-style testing library for Golang.
 
 ## Install
 ```
-$ go get github.com/r7kamura/gospel
+go get github.com/r7kamura/gospel
 ```
 
 ## Usage
