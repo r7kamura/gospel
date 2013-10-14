@@ -41,6 +41,9 @@ func (group *ExampleGroup) ReverseAncestors() []*ExampleGroup {
 
 // Gets root ExampleGroup defined by Describe func.
 func (group *ExampleGroup) Root() *ExampleGroup {
+	if group.Parent == nil {
+		return group
+	}
 	ancestors := group.Ancestors()
 	return ancestors[len(ancestors) - 1]
 }
