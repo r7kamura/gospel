@@ -16,6 +16,7 @@ func Describe(t *testing.T, description string, callback func()) {
 	}
 	callback()
 	currentExampleGroup.PrintResult()
+	currentExampleGroup = nil
 }
 
 func Context(description string, callback func()) {
