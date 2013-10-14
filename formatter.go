@@ -38,18 +38,20 @@ type Formatter interface {
 
 type DotFormatter struct {}
 
+// Does nothing.
 func (formatter *DotFormatter) Started(example *Example) {
 }
 
 func (formatter *DotFormatter) Failed(example *Example, message string) {
 	fmt.Print(red("F"))
-	if example.Describing.Result == "" {
-		example.Describing.Result += "\n\n"
+	root := example.ExampleGroup.Root()
+	if root.Result == "" {
+		root.Result += "\n\n"
 	}
 	_, filename, line, _ := runtime.Caller(3)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
-	example.Describing.Result += fmt.Sprintf(
+	root.Result += fmt.Sprintf(
 		red("  %s\n") +
 		grey("  %s\n") +
 		grey("  %s:%d\n") +
@@ -73,27 +75,22 @@ func (formatter *DotFormatter) Succeeded(example *Example) {
 type DocumentFormatter struct {}
 
 func (formatter *DocumentFormatter) Started(example *Example) {
-	fullMessage := ""
-	if example.DoneExamplesCount == 0 {
-		fullMessage += example.Description + "\n"
+	var previousDescriptions []string
+	if previousExample != nil {
+		previousDescriptions = previousExample.Descriptions()
 	}
-	if len(example.SubDescriptions) > 0 {
-		differenceIsFound := false
-		for i, subscription := range example.SubDescriptions {
-			if !differenceIsFound && i <= len(example.PreviousSubDescriptions) - 1 {
-				if subscription == example.PreviousSubDescriptions[i] {
-					continue
-				}
-			}
-			fullMessage += strings.Repeat("  ", i + 1) + subscription + "\n"
-			differenceIsFound = true
+	currentDescriptions := example.Descriptions()
+	fullMessage := ""
+	for i, description := range currentDescriptions {
+		if previousExample == nil || i > len(previousDescriptions) - 1 || description != previousDescriptions[i] {
+			fullMessage += strings.Repeat("  ", i) + description + "\n"
 		}
 	}
 	fmt.Print(fullMessage)
 }
 
 func (formatter *DocumentFormatter) Succeeded(example *Example) {
-	margin := strings.Repeat("  ", len(example.SubDescriptions) + 1)
+	margin := strings.Repeat("  ", len(example.ExampleGroup.Ancestors()) + 1)
 	fmt.Println(margin + green(example.Message))
 }
 
@@ -101,7 +98,7 @@ func (formatter *DocumentFormatter) Failed(example *Example, message string) {
 	_, filename, line, _ := runtime.Caller(3)
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
-	margin := strings.Repeat("  ", len(example.SubDescriptions) + 1)
+	margin := strings.Repeat("  ", len(example.ExampleGroup.Ancestors()) + 1)
 	fmt.Printf(
 		red("%s%s\n") +
 		grey("%s%s\n") +

@@ -11,6 +11,14 @@ func TestDescribe(t *testing.T) {
 		})
 
 		Context("with NotEqual", func() {
+			Before(func() {
+				// Called before each examples in this Context.
+			})
+
+			After(func() {
+				// Called after each examples in this Context.
+			})
+
 			It("evaluates actual != expected", func() {
 				Expect(1).To(NotEqual, 2)
 			})
