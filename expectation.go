@@ -1,6 +1,9 @@
 package gospel
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 // func Expect() creates a new Expectation object.
 type Expectation struct {
@@ -37,12 +40,28 @@ func NotEqual(values ...interface{}) (failureMessage string) {
 	return
 }
 
+func isNil(value interface{}) bool {
+	val := reflect.ValueOf(value)
+	switch val.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map,
+		reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
+		return val.IsNil()
+	}
+	return value == nil
+}
+
 // Checks if actual != nil.
 func Exist(values ...interface{}) (failureMessage string) {
-	return NotEqual(values[0], nil)
+	if isNil(values[0]) {
+		failureMessage = fmt.Sprintf("Expected `%v` is not exist.", values[0])
+	}
+	return
 }
 
 // Checks if actual == nil.
 func NotExist(values ...interface{}) (failureMessage string) {
-	return Equal(values[0], nil)
+	if !isNil(values[0]) {
+		failureMessage = fmt.Sprintf("Expected `%v` is exist.", values[0])
+	}
+	return
 }
