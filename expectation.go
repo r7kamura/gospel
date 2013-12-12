@@ -65,3 +65,18 @@ func NotExist(values ...interface{}) (failureMessage string) {
 	}
 	return
 }
+
+// Checks deep equailty of actual and expected.
+func Same(values ...interface{}) (failureMessage string) {
+	if !reflect.DeepEqual(values[0], values[1]) {
+		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
+	}
+	return
+}
+
+func NotSame(values ...interface{}) (failureMessage string) {
+	if reflect.DeepEqual(values[0], values[1]) {
+		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
+	}
+	return
+}
