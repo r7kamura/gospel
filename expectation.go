@@ -26,7 +26,7 @@ type Matcher func(...interface{}) string
 
 // Checks if actual == expected.
 func Equal(values ...interface{}) (failureMessage string) {
-	if values[0] != values[1] {
+	if !reflect.DeepEqual(values[0], values[1]) {
 		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
 	}
 	return
@@ -34,7 +34,7 @@ func Equal(values ...interface{}) (failureMessage string) {
 
 // Checks if actual != expected.
 func NotEqual(values ...interface{}) (failureMessage string) {
-	if values[0] == values[1] {
+	if reflect.DeepEqual(values[0], values[1]) {
 		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
 	}
 	return
@@ -62,21 +62,6 @@ func Exist(values ...interface{}) (failureMessage string) {
 func NotExist(values ...interface{}) (failureMessage string) {
 	if !isNil(values[0]) {
 		failureMessage = fmt.Sprintf("Expected `%v` is exist.", values[0])
-	}
-	return
-}
-
-// Checks deep equailty of actual and expected.
-func Same(values ...interface{}) (failureMessage string) {
-	if !reflect.DeepEqual(values[0], values[1]) {
-		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
-	}
-	return
-}
-
-func NotSame(values ...interface{}) (failureMessage string) {
-	if reflect.DeepEqual(values[0], values[1]) {
-		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
 	}
 	return
 }
