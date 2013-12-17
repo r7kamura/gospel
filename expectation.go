@@ -26,7 +26,7 @@ type Matcher func(...interface{}) string
 
 // Checks if actual == expected.
 func Equal(values ...interface{}) (failureMessage string) {
-	if values[0] != values[1] {
+	if !reflect.DeepEqual(values[0], values[1]) {
 		failureMessage = fmt.Sprintf("Expected `%v` to equal `%v`", values[0], values[1])
 	}
 	return
@@ -34,7 +34,7 @@ func Equal(values ...interface{}) (failureMessage string) {
 
 // Checks if actual != expected.
 func NotEqual(values ...interface{}) (failureMessage string) {
-	if values[0] == values[1] {
+	if reflect.DeepEqual(values[0], values[1]) {
 		failureMessage = fmt.Sprintf("Expected `%v` to not equal `%v`", values[0], values[1])
 	}
 	return
