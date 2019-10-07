@@ -6,10 +6,13 @@ import (
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/mattn/go-colorable"
 )
 
 // Decides Formatter type.
 var verboseMode bool
+var Output = colorable.NewColorableStdout()
 
 // Checks if -v option specified or not.
 func init() {
@@ -43,7 +46,7 @@ func (formatter *DotFormatter) Started(example *Example) {
 }
 
 func (formatter *DotFormatter) Failed(example *Example, message string) {
-	fmt.Print(red("F"))
+	fmt.Fprintf(Output, red("F"))
 	root := example.ExampleGroup.Root()
 	if root.Result == "" {
 		root.Result += "\n\n"
@@ -69,7 +72,7 @@ func (formatter *DotFormatter) Failed(example *Example, message string) {
 }
 
 func (formatter *DotFormatter) Succeeded(example *Example) {
-	fmt.Print(green("."))
+	fmt.Fprintf(Output, green("."))
 }
 
 type DocumentFormatter struct {}
@@ -86,12 +89,12 @@ func (formatter *DocumentFormatter) Started(example *Example) {
 			fullMessage += strings.Repeat("  ", i) + description + "\n"
 		}
 	}
-	fmt.Print(fullMessage)
+	fmt.Fprint(Output, fullMessage)
 }
 
 func (formatter *DocumentFormatter) Succeeded(example *Example) {
 	margin := strings.Repeat("  ", len(example.ExampleGroup.Ancestors()) + 1)
-	fmt.Println(margin + green(example.Message))
+	fmt.Fprintln(Output, margin + green(example.Message))
 }
 
 func (formatter *DocumentFormatter) Failed(example *Example, message string) {
@@ -99,7 +102,7 @@ func (formatter *DocumentFormatter) Failed(example *Example, message string) {
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	margin := strings.Repeat("  ", len(example.ExampleGroup.Ancestors()) + 1)
-	fmt.Printf(
+	fmt.Fprint(Output,
 		red("%s%s\n") +
 		grey("%s%s\n") +
 		grey("%s%s:%d\n") +

@@ -17,7 +17,7 @@ type ExampleGroup struct {
 
 // In non-verbose mode, we print test results for each Describe.
 func (group *ExampleGroup) PrintResult() {
-	fmt.Print(group.Result)
+	fmt.Fprint(Output, group.Result)
 }
 
 // Returns its ancestor ExampleGroups in ascending order according to distance.
