@@ -102,7 +102,7 @@ func (formatter *DocumentFormatter) Failed(example *Example, message string) {
 	buffer, _ := ioutil.ReadFile(filename)
 	lines := strings.Split(string(buffer), "\n")[line-2:line+2]
 	margin := strings.Repeat("  ", len(example.ExampleGroup.Ancestors()) + 1)
-	fmt.Fprint(Output,
+	result := fmt.Sprintf(
 		red("%s%s\n") +
 		grey("%s%s\n") +
 		grey("%s%s:%d\n") +
@@ -116,6 +116,7 @@ func (formatter *DocumentFormatter) Failed(example *Example, message string) {
 		margin, line + 0, strings.Replace(lines[1], "\t", "  ", -1),
 		margin, line + 1, strings.Replace(lines[2], "\t", "  ", -1),
 	)
+	fmt.Fprint(Output, result)
 }
 
 // Add red terminal ANSI color
