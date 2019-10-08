@@ -86,7 +86,7 @@ func (formatter *DocumentFormatter) Started(example *Example) {
 	fullMessage := ""
 	for i, description := range currentDescriptions {
 		if previousExample == nil || i > len(previousDescriptions) - 1 || description != previousDescriptions[i] {
-			fullMessage += strings.Repeat("  ", i) + description + "\n"
+			fullMessage += strings.Repeat("  ", i) + "\033[0m" + description + "\n"
 		}
 	}
 	fmt.Fprint(Output, fullMessage)
